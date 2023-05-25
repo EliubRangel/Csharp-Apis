@@ -2,12 +2,13 @@ namespace Csharp_Apis.Entities
 {
     public class Clientes
     {
-     public int Id {get;set;}
-     public string Nombre {get;set;}
-     public string Apellido {get;set;}
-     public DateTime FechaNacimiento {get;set;}
-     public string Telefono {get;set;}   
-     public bool Factura {get;set;}
+     public int Id{get;set;}
+     public string Nombre{get;set;}
+     public string Apellido{get;set;}
+     public DateTime FechaNacimiento{get;set;}
+     public string Telefono{get;set;}   
+     public bool Factura{get;set;}
+     public List<Ventas> Ventas{get;set;}
 
      public Clientes (int Id, string Nombre, string Apellido, DateTime FechaNacimiento, string Telefono, bool Factura)
      {

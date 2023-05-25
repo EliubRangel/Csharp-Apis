@@ -7,6 +7,7 @@ namespace Csharp_Apis.Entities
         public string Precio{get;set;}
         public int Cantidad{get;set;}
         public int Total{get;set;}
+        public Clientes Clientes{get;set;}
 
         public Ventas (int Id, string Articulo, string Precio, int Cantidad, int Total)
     {
