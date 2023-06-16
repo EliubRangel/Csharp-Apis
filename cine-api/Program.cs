@@ -1,4 +1,13 @@
+using cine_api.Context;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var constr = "server=localhost;database=Cines;uid=root;pwd=pwd123;port=3306;";
+            
+builder.Services
+    .AddDbContext<CineDbContext>(options => 
+        options.UseMySql(constr, ServerVersion.AutoDetect(constr)));
 
 // Add services to the container.
 
@@ -16,7 +25,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

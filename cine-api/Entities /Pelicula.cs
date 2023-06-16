@@ -8,7 +8,7 @@ namespace cine_api.Entities
         public int Calificacion{get;set;}
         public Clasificacion Clasificacion{get;set;}
         public string Director{get;set;}
-        public List<Sala>Salas{get;set;}
+        public List<Sala> Salas{get;set;}
 
         public Pelicula(string Titulo, string Descripcion, int Calificacion,string Director)
         {

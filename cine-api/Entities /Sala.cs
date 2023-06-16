@@ -2,6 +2,7 @@ namespace cine_api.Entities
 {
     public class Sala
     {
+        public int Id{get;set;}
         public int NumeroSala{ get; set; }
         public int CantidadAsientos{ get; set; }
         public Tiposala Tiposala{get;set;}
