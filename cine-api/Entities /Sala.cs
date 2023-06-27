@@ -13,6 +13,7 @@ namespace cine_api.Entities
             this.NumeroSala=NumeroSala;
             this.CantidadAsientos=CantidadAsientos;
             this.Tiposala=Tiposala;
+            this.Peliculas = new List<Pelicula>();
         }
 
 

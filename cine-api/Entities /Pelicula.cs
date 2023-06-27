@@ -17,6 +17,7 @@ namespace cine_api.Entities
             this.Calificacion=Calificacion;
             this.Clasificacion=Clasificacion;
             this.Director=Director;
+            this.Salas = new List<Sala>();
         }
         public override string ToString()
         {
