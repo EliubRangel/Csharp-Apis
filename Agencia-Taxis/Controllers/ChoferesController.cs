@@ -6,6 +6,7 @@ using Agencia_Taxis.Entities;
 using Agencia_Taxis.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Agencia_Taxis.models;
 
 namespace Agencia_Taxis.Controllers
 {
@@ -31,7 +32,9 @@ namespace Agencia_Taxis.Controllers
          [HttpGet]
         public ActionResult Get()
         {
-            var choferes = dbContext.Choferes.ToList();
+            var choferes = dbContext.Choferes
+                .Include(x => x.Taxis)
+                .ToList();
             return Ok(choferes);
         }
         [HttpPut]
@@ -60,6 +63,20 @@ namespace Agencia_Taxis.Controllers
             dbContext.SaveChanges();
             return Ok(cte);
             
+        }
+        [HttpPost]
+        [Route("taxi")]
+        public ActionResult AsignarTaxi(AsignarTaxiDto dto)
+        {
+            var taxi = dbContext.Taxis.FirstOrDefault(x => x.Id == dto.IdTaxi);
+            var chofer = dbContext.Choferes
+                .Include(x => x.Taxis)
+                .FirstOrDefault(x => x.Id == dto.IdChofer);
+            if(chofer.Taxis.Count < 3){
+                chofer.Taxis.Add(taxi);
+                dbContext.SaveChanges();
+            }
+            return Ok("OK");
         }
     }
 

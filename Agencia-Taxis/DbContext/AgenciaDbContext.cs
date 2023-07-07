@@ -22,7 +22,17 @@ namespace Agencia_Taxis
         {
             var constr = "server=localhost;database=AgenciaTaxis;uid=root;pwd=pwd123;port=3306;";
             optionsBuilder.UseMySql(constr, ServerVersion.AutoDetect(constr));
+        }
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.Entity<Choferes>()
+                .HasMany(x=>x.Taxis)
+                .WithMany(x => x.Choferes);
+            builder.Entity<Taxis>()
+                .HasMany(x=>x.Choferes)
+                .WithMany(x => x.Taxis);
         }
 
 

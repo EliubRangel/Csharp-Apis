@@ -1,6 +1,8 @@
 using Agencia_Taxis.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Agencia_Taxis;
+using System.Text.Json.Serialization;
+
 var builder = WebApplication.CreateBuilder(args);
 var constr = "server=localhost;database=AgenciaTaxis;uid=root;pwd=pwd123;port=3306;";
             
@@ -11,7 +13,7 @@ builder.Services
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
