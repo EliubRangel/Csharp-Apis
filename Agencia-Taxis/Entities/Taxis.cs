@@ -10,6 +10,11 @@ namespace Agencia_Taxis.Entities
         public string NumeroPlaca { get; set; }
         public ICollection<Choferes> Choferes { get; set; }
 
+        public Taxis()
+        {
+            this.Choferes= new List<Choferes>(); 
+        }
+
 
 
     }

@@ -6,6 +6,7 @@ using Agencia_Taxis.Entities;
 using Agencia_Taxis.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Agencia_Taxis.models;
 
 namespace Agencia_Taxis.Controllers
 {
@@ -30,8 +31,12 @@ namespace Agencia_Taxis.Controllers
         [HttpGet]
         public ActionResult Get()
         {
+            ResultApi result= new ResultApi();
+
             var taxis = dbContext.Taxis.ToList();
-            return Ok(taxis);
+            result.Data=taxis;
+            result.Message="ok";
+            return Ok(result);
         }
         [HttpPut]
         public ActionResult ActualizarTaxi(Taxis taxis)

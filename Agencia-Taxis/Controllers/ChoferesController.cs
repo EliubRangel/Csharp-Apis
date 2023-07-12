@@ -32,10 +32,14 @@ namespace Agencia_Taxis.Controllers
          [HttpGet]
         public ActionResult Get()
         {
+            ResultApi result= new ResultApi();
             var choferes = dbContext.Choferes
                 .Include(x => x.Taxis)
                 .ToList();
-            return Ok(choferes);
+                result.Data=choferes;
+                result.Message="Ok";
+                
+            return Ok(result);
         }
         [HttpPut]
         public ActionResult ActualizarChofer(Choferes choferes)
@@ -67,16 +71,43 @@ namespace Agencia_Taxis.Controllers
         [HttpPost]
         [Route("taxi")]
         public ActionResult AsignarTaxi(AsignarTaxiDto dto)
-        {
+        {   
+            ResultApi result= new ResultApi();
+
             var taxi = dbContext.Taxis.FirstOrDefault(x => x.Id == dto.IdTaxi);
+            if(taxi==null)
+            {
+                result.Message=$"No se encontro el taxi con el Id {dto.IdTaxi}";
+                result.IsError=true;
+                return NotFound(result);
+                
+            }
+            
             var chofer = dbContext.Choferes
                 .Include(x => x.Taxis)
                 .FirstOrDefault(x => x.Id == dto.IdChofer);
-            if(chofer.Taxis.Count < 3){
+                if(chofer==null)
+                {
+                    result.Message=$"No se encontro el chofer con el Id {dto.IdChofer}";
+                    result.IsError=true;
+                    return NotFound(result);
+                }
+            if(chofer.Taxis.Count < 2){
                 chofer.Taxis.Add(taxi);
                 dbContext.SaveChanges();
             }
-            return Ok("OK");
+            else
+            {
+                result.Message=$"El chofer con el Id {dto.IdChofer} ya cuenta con 2 taxis";
+                result.IsError=true;
+                return BadRequest(result);
+            }
+            result.Message="Se asigno el taxi correctamente";
+            
+
+            
+            
+            return Ok(result);
         }
     }
 
