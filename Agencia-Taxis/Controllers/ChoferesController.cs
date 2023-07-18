@@ -25,9 +25,12 @@ namespace Agencia_Taxis.Controllers
         public ActionResult NuevoChofer(Choferes choferes)
         {
             //validar el obj cliente
+            ResultApi result= new ResultApi();
             dbContext.Choferes.Add(choferes);
             dbContext.SaveChanges();
-            return Ok(choferes);
+            result.Message="Se agrego el chofer correctamente";
+            result.Data=choferes;
+            return Ok(result);
         }
          [HttpGet]
         public ActionResult Get()
@@ -44,8 +47,17 @@ namespace Agencia_Taxis.Controllers
         [HttpPut]
         public ActionResult ActualizarChofer(Choferes choferes)
         {
+            ResultApi result= new ResultApi();
             var cte = dbContext.Choferes.FirstOrDefault(x => x.Id == choferes.Id);
-            cte.Nombre = choferes.Nombre;
+            if(cte==null)
+            {
+                result.Message=$"No se encontro el chofer con el Id {cte.Id}";
+                result.IsError=true;
+                return NotFound(result);
+            }
+            else
+          {
+              cte.Nombre = choferes.Nombre;
             cte.Apellido = choferes.Apellido;
             cte.NumeroLicencia= choferes.NumeroLicencia;
             cte.FechaExpiracion= choferes.FechaExpiracion;
@@ -53,19 +65,28 @@ namespace Agencia_Taxis.Controllers
 
             dbContext.Update(cte);
             dbContext.SaveChanges();
-            return Ok(cte);
+            result.Data=cte;
+            result.Message=$"Se modifico el chofer con el Id {cte.Id} correctamente";
+            return Ok(result);
+          }
         }
          [HttpDelete]
         public ActionResult EliminarChofer(int Id)
         {
-            var cte =dbContext.Choferes.FirstOrDefault(x=> x.Id == Id);
-            if(cte == null)
+            ResultApi result= new ResultApi();
+            var chofer =dbContext.Choferes.FirstOrDefault(x=> x.Id == Id);
+            if(chofer == null)
             {
-               return NotFound("No se encontro el chofer con el Id");
+               result.Message=$"No se encontro el chofer con el Id{chofer.Id}";
+               result.IsError=true;
+               result.Data=chofer;
+               return NotFound(result);
             }
-            dbContext.Remove(cte);
+            dbContext.Remove(chofer);
             dbContext.SaveChanges();
-            return Ok(cte);
+            result.Message= $"Se elimino el chofer con el {chofer.Id} correctamente";
+            result.Data=chofer;
+            return Ok(result);
             
         }
         [HttpPost]

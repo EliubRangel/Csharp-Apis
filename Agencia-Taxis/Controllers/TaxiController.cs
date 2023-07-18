@@ -24,9 +24,12 @@ namespace Agencia_Taxis.Controllers
         public ActionResult NuevoTaxi(Taxis taxis)
         {
             //validar el obj cliente
+            ResultApi result= new ResultApi();
             dbContext.Taxis.Add(taxis);
             dbContext.SaveChanges();
-            return Ok(taxis);
+            result.Message="Se agrego el taxi correctamente";
+            result.Data=taxis;
+            return Ok(result);
         }
         [HttpGet]
         public ActionResult Get()
@@ -41,7 +44,16 @@ namespace Agencia_Taxis.Controllers
         [HttpPut]
         public ActionResult ActualizarTaxi(Taxis taxis)
         {
+            ResultApi result= new ResultApi();
             var cte = dbContext.Taxis.FirstOrDefault(x => x.Id == taxis.Id);
+            if(cte==null)
+            {
+                result.Message=$"No se encontro el taxi con el Id {cte.Id}";
+                result.IsError=true;
+                return NotFound(result);
+            }
+            else
+        {
             cte.Marca = taxis.Marca;
             cte.Modelo = taxis.Modelo;
             cte.Año = taxis.Año;
@@ -50,19 +62,30 @@ namespace Agencia_Taxis.Controllers
 
             dbContext.Update(cte);
             dbContext.SaveChanges();
-            return Ok(cte);
+             result.Data=cte;
+            result.Message=$"Se modifico el taxi con el Id {cte.Id} correctamente";
+            return Ok(result);
         }
+            
+        }
+        
         [HttpDelete]
         public ActionResult EliminarTaxi(int Id)
         {
+            ResultApi result= new ResultApi();
             var cte = dbContext.Taxis.FirstOrDefault(x => x.Id == Id);
             if (cte == null)
             {
+                result.Message=$"No se encontro el taxi con el Id{cte.Id}";
+               result.IsError=true;
+               result.Data=cte;
                 return NotFound("No se encontro el taxi con el Id");
             }
             dbContext.Remove(cte);
             dbContext.SaveChanges();
-            return Ok(cte);
+            result.Message=$"Se elimino taxi con el Id {cte.Id} correctamente";
+            result.Data=cte;
+            return Ok(result);
 
         }
 
