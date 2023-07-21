@@ -10,6 +10,7 @@ namespace Agencia_Taxis
     {
         public DbSet<Choferes> Choferes { get; set; }
         public DbSet<Taxis> Taxis { get; set; }
+        public DbSet<Planta> Planta { get; set; }
 
 
         public AgenciaDbContext(DbContextOptions<AgenciaDbContext> options)
@@ -28,10 +29,10 @@ namespace Agencia_Taxis
         {
             base.OnModelCreating(builder);
             builder.Entity<Choferes>()
-                .HasMany(x=>x.Taxis)
+                .HasMany(x => x.Taxis)
                 .WithMany(x => x.Choferes);
             builder.Entity<Taxis>()
-                .HasMany(x=>x.Choferes)
+                .HasMany(x => x.Choferes)
                 .WithMany(x => x.Taxis);
         }
 
