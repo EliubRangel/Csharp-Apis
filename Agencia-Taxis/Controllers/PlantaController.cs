@@ -10,7 +10,7 @@ using Agencia_Taxis.models;
 namespace Agencia_Taxis.Controllers
 {
     [ApiController]
-    [Route("Controller")]
+    [Route("[Controller]")]
     public class PlantaController : Controller
     {
         private readonly AgenciaDbContext dbContext;
@@ -25,10 +25,12 @@ namespace Agencia_Taxis.Controllers
         {
             ResultApi result = new ResultApi();
 
-            var Planta = dbContext.Planta.ToList();
+            var Planta = dbContext.Planta.Include(x=>x.Taxis).ToList();
+            
             result.Data = Planta;
             result.Message = "ok";
             return Ok(result);
+
         }
 
         [HttpPost]
@@ -115,9 +117,16 @@ namespace Agencia_Taxis.Controllers
                 return NotFound(result);
 
             }
+            if(dbContext)
             if(Planta.EspaciosDisponibles>=1)
             {
                Planta.Taxis.Add(Taxi);
+               Planta.EspaciosDisponibles = Planta.EspaciosDisponibles-1;
+
+               dbContext.Update(Planta); 
+               dbContext.SaveChanges();
+               
+               
                
             }
             else
@@ -126,7 +135,8 @@ namespace Agencia_Taxis.Controllers
                 result.IsError= true;
                 return NotFound(result);
             }
-            
+            result.Message=$"Se translado el taxi {dto.IdTaxi} correctamente";
+            return Ok(result);
 
 
         }
