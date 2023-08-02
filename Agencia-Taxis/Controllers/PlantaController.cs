@@ -25,8 +25,8 @@ namespace Agencia_Taxis.Controllers
         {
             ResultApi result = new ResultApi();
 
-            var Planta = dbContext.Planta.Include(x=>x.Taxis).ToList();
-            
+            var Planta = dbContext.Planta.Include(x => x.Taxis).ToList();
+
             result.Data = Planta;
             result.Message = "ok";
             return Ok(result);
@@ -48,6 +48,10 @@ namespace Agencia_Taxis.Controllers
         public ActionResult ActualizarPlanta(Planta planta)
         {
             ResultApi result = new ResultApi();
+            //pasos para actualizar un registro en ef:
+            //1: consultar el registro a modificar. se necesita consultar para que ef mantenga un la relacion.
+
+
             var Pta = dbContext.Planta.FirstOrDefault(x => x.Id == planta.Id);
             if (Pta == null)
             {
@@ -57,6 +61,7 @@ namespace Agencia_Taxis.Controllers
             }
             else
             {
+                //2: asignar los nuevos valores a las propiedades que se modificaran en el registro.
                 Pta.Encargado = planta.Encargado;
                 Pta.Direccion = planta.Direccion;
                 Pta.Colonia = planta.Colonia;
@@ -65,7 +70,7 @@ namespace Agencia_Taxis.Controllers
                 Pta.EspaciosTotales = planta.EspaciosTotales;
                 Pta.FechaApertura = planta.FechaApertura;
                 Pta.NumeroAfiliacion = planta.NumeroAfiliacion;
-
+                //3: llamar al metodo update.
                 dbContext.Update(Pta);
                 dbContext.SaveChanges();
                 result.Data = Pta;
@@ -98,49 +103,42 @@ namespace Agencia_Taxis.Controllers
         public ActionResult TrasladarTaxi(TrasladarTaxiDto dto)
         {
             ResultApi result = new ResultApi();
-            var Taxi = dbContext.Taxis.FirstOrDefault(x => x.Id == dto.IdTaxi);
-            if(Taxi== null)
+            var Taxi = dbContext.Taxis.Include(x=> x.Planta).FirstOrDefault(x => x.Id == dto.IdTaxi);
+            if (Taxi == null)
             {
-             result.Message=$"No se encontro el taxi con el Id {dto.IdTaxi}";
-             result.IsError = true;
-            return NotFound(result);
+                result.Message = $"No se encontro el taxi con el Id {dto.IdTaxi}";
+                result.IsError = true;
+                return NotFound(result);
             }
-            
-
+             
             var Planta = dbContext.Planta
-            .Include(x => x.Taxis)
-            .FirstOrDefault(x => x.Id == dto.IdPlanta);
+                .Include(x => x.Taxis)
+                .FirstOrDefault(x => x.Id == dto.IdPlanta);
             if (Planta == null)
             {
-                result.Message=$"No se encontro la Planta con el id {dto.IdPlanta}";
-                result.IsError= true;
+                result.Message = $"No se encontro la Planta con el id {dto.IdPlanta}";
+                result.IsError = true;
                 return NotFound(result);
-
             }
-            if(dbContext)
-            if(Planta.EspaciosDisponibles>=1)
+            if (Planta.EspaciosDisponibles >= 1)
             {
-               Planta.Taxis.Add(Taxi);
-               Planta.EspaciosDisponibles = Planta.EspaciosDisponibles-1;
-
-               dbContext.Update(Planta); 
-               dbContext.SaveChanges();
-               
-               
-               
+                Planta.Taxis.Add(Taxi);
+                Planta.EspaciosDisponibles = Planta.EspaciosDisponibles - 1;
+                Taxi.Planta.EspaciosDisponibles= Taxi.Planta.EspaciosDisponibles+1;
+                dbContext.Update(Planta);
+                dbContext.SaveChanges();
             }
             else
             {
-                 result.Message=$"No se encontro espacio disponible en la planta";
-                result.IsError= true;
+                result.Message = $"No se encontro espacio disponible en la planta";
+                result.IsError = true;
                 return NotFound(result);
             }
-            result.Message=$"Se translado el taxi {dto.IdTaxi} correctamente";
+            result.Message = $"Se translado el taxi {dto.IdTaxi} correctamente";
             return Ok(result);
 
 
         }
-
-
+       
     }
 }
