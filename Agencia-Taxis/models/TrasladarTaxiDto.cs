@@ -4,5 +4,6 @@ namespace Agencia_Taxis.models
     {
         public int IdTaxi {get;set;}
         public int IdPlanta {get;set;}
+      
     }
 }

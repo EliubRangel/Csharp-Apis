@@ -3,6 +3,7 @@ using System;
 using Agencia_Taxis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Agencia_Taxis.Migrations
 {
     [DbContext(typeof(AgenciaDbContext))]
-    partial class AgenciaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230804022622_Reporte")]
+    partial class Reporte
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
