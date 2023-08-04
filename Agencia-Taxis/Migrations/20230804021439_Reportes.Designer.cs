@@ -3,6 +3,7 @@ using System;
 using Agencia_Taxis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Agencia_Taxis.Migrations
 {
     [DbContext(typeof(AgenciaDbContext))]
-    partial class AgenciaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230804021439_Reportes")]
+    partial class Reportes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,7 +95,7 @@ namespace Agencia_Taxis.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("ChoferId")
+                    b.Property<int>("ChofereId")
                         .HasColumnType("int");
 
                     b.Property<string>("Descripcion")
@@ -114,7 +116,7 @@ namespace Agencia_Taxis.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChoferId");
+                    b.HasIndex("ChofereId");
 
                     b.HasIndex("TaxiId");
 
@@ -173,9 +175,9 @@ namespace Agencia_Taxis.Migrations
 
             modelBuilder.Entity("Agencia_Taxis.Entities.Reportes", b =>
                 {
-                    b.HasOne("Agencia_Taxis.Entities.Choferes", "Chofer")
+                    b.HasOne("Agencia_Taxis.Entities.Choferes", "Chofere")
                         .WithMany("Reportes")
-                        .HasForeignKey("ChoferId")
+                        .HasForeignKey("ChofereId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -185,7 +187,7 @@ namespace Agencia_Taxis.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Chofer");
+                    b.Navigation("Chofere");
 
                     b.Navigation("Taxi");
                 });

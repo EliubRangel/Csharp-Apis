@@ -10,7 +10,8 @@ namespace Agencia_Taxis.Entities
         public DateTime FechaExpiracion { get; set; }
         public DateTime FechaNacimiento { get; set; }
         public ICollection<Taxis> Taxis { get; set; }
-
+        public ICollection<Reportes>Reportes{get;set;}
+        
         public Choferes()
         {
             this.Taxis= new List<Taxis>(); 

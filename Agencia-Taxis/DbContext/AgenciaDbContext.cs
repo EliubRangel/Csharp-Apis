@@ -11,6 +11,7 @@ namespace Agencia_Taxis
         public DbSet<Choferes> Choferes { get; set; }
         public DbSet<Taxis> Taxis { get; set; }
         public DbSet<Planta> Planta { get; set; }
+        public DbSet<Reportes> Reportes { get; set; }
 
 
         public AgenciaDbContext(DbContextOptions<AgenciaDbContext> options)
