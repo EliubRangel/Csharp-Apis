@@ -113,7 +113,14 @@ namespace Agencia_Taxis.Controllers
                     result.IsError=true;
                     return NotFound(result);
                 }
-            if(chofer.Taxis.Count < 2){
+
+            var rep = dbContext.Reportes
+               .FirstOrDefault(x => x.Estatus == Estatus.Abierto);
+            // falta agregar el dto idchofer
+
+
+            if (chofer.Taxis.Count < 2 ){
+               
                 chofer.Taxis.Add(taxi);
                 dbContext.SaveChanges();
             }
