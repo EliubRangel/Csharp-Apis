@@ -30,7 +30,7 @@ namespace Agencia_Taxis.Controllers
             //validar que el id del taxi que recibimos por parametro
             //exista en la tabla de taxi en db 
             var taxi = dbContext.Taxis.FirstOrDefault(t => t.Id == reportes.TaxiId);
-            if(taxi == null)
+            if (taxi == null)
             {
                 result.Message = "El id del taxi no existe";
                 return BadRequest(result);
@@ -40,7 +40,7 @@ namespace Agencia_Taxis.Controllers
             //valida que el id del chofer que recibimos por paramtro
             //exista en la tabla de chofer en db
             var Chof = dbContext.Choferes.FirstOrDefault(c => c.Id == reportes.ChoferId);
-            if(Chof == null)
+            if (Chof == null)
             {
                 result.Message = "El Id del Chofer no existe";
                 return BadRequest(result);
@@ -57,20 +57,69 @@ namespace Agencia_Taxis.Controllers
         }
 
         [HttpGet]
-        public ActionResult ConsultarReporte(int idChofer)
+        public ActionResult ConsultarReporte(int idChofer, bool includeAll = false)
         {
             ResultApi result = new ResultApi();
-            var Reportes= dbContext.Reportes
-            .Where(reporte => reporte.Estatus == Estatus.Abierto
+            var Reportes = dbContext.Reportes
+                //si includeall es falso filtra con la condicion de estatus igual a abierto
+                //si es true ignora la condicion de estatus igual a abierto 
+                .Where(reporte => (includeAll || reporte.Estatus == Estatus.Abierto)
              && reporte.Chofer.Id == idChofer) //Where filtra todos los elementos que cumplan con una condicion. Aun no ha ido a la db
             .ToList();
             // Va a la db y trae los registros que cumplieron con la condicion del where
-            
-                    
+
+
             result.Data = Reportes;
             result.Message = "Ok";
             return Ok(result);
         }
+
+        [HttpPut]
+        public ActionResult ResolverReporte(int ID)
+
+        {
+            ResultApi result = new ResultApi();
+            var Repo = dbContext.Reportes.FirstOrDefault(x => x.Id == ID);
+            if(Repo == null)
+            {
+                result.Message = "El Id del reporte no existe";
+                result.Data = true;
+                return NotFound(result);
+            }
+
+            else
+            {
+                Repo.Estatus = Estatus.Resuelto;
+                dbContext.Update(Repo);
+                dbContext.SaveChanges();
+                result.Data = Repo;
+                result.Message = "Se cambio el estatus correctamente";
+                return Ok(result);
+            }
+        }
+        [HttpDelete]
+        public ActionResult CancelarReporte(int Id)
+        {
+            ResultApi result = new ResultApi();
+            var Rep = dbContext.Reportes.FirstOrDefault(x => x.Id == Id);
+            if(Rep == null)
+            {
+                result.Message = "El id del reporte no existe";
+                result.Data = true;
+                return NotFound(result);
+            }
+            else
+            {
+                Rep.Estatus = Estatus.Cancelado;
+                dbContext.Update(Rep);
+                dbContext.SaveChanges();
+                result.Data = Rep;
+                result.Message = "Se cancelo el reporte correctamente";
+                return Ok(result);
+            }
+        }
+
+
 
     }
 
