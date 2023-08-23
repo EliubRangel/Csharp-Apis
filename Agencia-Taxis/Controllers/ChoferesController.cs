@@ -156,6 +156,52 @@ namespace Agencia_Taxis.Controllers
 
             return Ok(result);
         }
+        [HttpGet]
+        [Route("MayorEdad")]
+        public ActionResult MayorEdad()
+        {
+            ResultApi result = new ResultApi();
+            var MayorDeEdad = dbContext
+                .Choferes
+                .Where(x => DateTime.Today.AddYears(-50) >= x.FechaNacimiento)
+                .ToList();
+            result.Data = MayorDeEdad;
+            result.Message = "Ok";
+            return Ok(result);
+        }
+        [HttpGet]
+        [Route("Licencia")]
+        public ActionResult LicenciaExpirada()
+        {
+            ResultApi result =new ResultApi();
+            var Expiracion = dbContext
+                .Choferes
+                .Where(x => DateTime.Today >= x.FechaExpiracion)
+                .ToList();
+            result.Data = Expiracion;
+            result.Message = "Ok";
+            return Ok(result);
+        }
+        [HttpGet]
+       [Route("SinTaxis")]
+        public ActionResult SinTaxis()
+        {
+            ResultApi result = new ResultApi();
+            var SinTaxis = dbContext
+                .Choferes
+                //el metodo any sin paramatros te dice si una
+                // coleccion contiene elementos.
+                // la negacion con el simbolo ! es una negacion que significa
+                //que se incluiran los choferes que no tengan taxis
+                .Where(x => !x.Taxis.Any())
+                .ToList();
+            result.Data = SinTaxis;
+            result.Message = "Ok";
+            return Ok(result);
+        }
+        [HttpGet]
+        [Route("")]
+        
     }
 
 
