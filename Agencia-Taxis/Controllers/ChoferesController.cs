@@ -200,7 +200,29 @@ namespace Agencia_Taxis.Controllers
             return Ok(result);
         }
         [HttpGet]
-        [Route("")]
+        [Route("EstatusAbierto")]
+        public ActionResult ChoferEstatusAbierto()
+        {
+            ResultApi result = new ResultApi();
+            var EstatusAbierto = dbContext
+                .Reportes
+                .Where(x => x.Estatus == Estatus.Abierto)
+                .ToList();
+            result.Data = EstatusAbierto;
+            result.Message = "Ok";
+            return Ok(result);
+        }
+        [HttpGet]
+        [Route("ChoferID")]
+        public ActionResult ChoferId(Choferes id)
+        {
+            ResultApi result = new ResultApi();
+            var ChoferId = dbContext
+                .Choferes
+                .FirstOrDefault(x => x.Id == id.Id);
+            result.Data = ChoferId;
+
+        }
         
     }
 
