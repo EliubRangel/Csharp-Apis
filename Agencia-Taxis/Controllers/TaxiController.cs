@@ -88,6 +88,100 @@ namespace Agencia_Taxis.Controllers
             return Ok(result);
 
         }
+        [HttpGet]
+        [Route("TaxiPlaca")]
+        public ActionResult TaxiPorPlaca(string Placa)
+
+        {
+            ResultApi result = new ResultApi();
+            var NumPlaca = dbContext
+                .Taxis
+                .FirstOrDefault(x => x.NumeroPlaca == Placa);
+            if(NumPlaca == null)
+            {
+                result.Message = $"No se encontro la placa con la numeracion {NumPlaca}";
+                result.IsError = true;
+                result.Data = NumPlaca;
+                return BadRequest(result);
+            }
+            dbContext.SaveChanges();
+            result.Message = "Ok";
+            result.Data = NumPlaca;
+            return Ok(result);
+        }
+        [HttpGet]
+        [Route("MarcaModel")]
+        public ActionResult MarcaYModelo(string Marca, string Modelo)
+        {
+            ResultApi result = new ResultApi();
+            var MM = dbContext
+                .Taxis
+                .FirstOrDefault(x => x.Marca == Marca && x.Modelo == Modelo);
+                if(MM == null)
+            {
+                result.Message = $"No se encontro el taxi con la marca {Marca} y el modelo {Modelo}";
+                result.IsError = true;
+                result.Data = MM;
+                return BadRequest(result);
+            }
+            dbContext.SaveChanges();
+            result.Message = "Ok";
+            result.Data = MM;
+            return Ok(result);
+        }
+        [HttpGet]
+        [Route("Añotaxi")]
+        public ActionResult AñodeTaxi(string Marca)
+        {
+            ResultApi result = new ResultApi();
+            var TaxiMarca = dbContext
+                .Taxis
+                .FirstOrDefault(x => x.Marca == Marca);
+            if(TaxiMarca == null)
+            {
+                result.Message = $"No se encontro el taxi de la marca {TaxiMarca}";
+                result.IsError = true;
+                result.Data = TaxiMarca;
+                return BadRequest(result);
+            }
+            dbContext.SaveChanges();
+            result.Message = "Ok";
+            result.Data = TaxiMarca.Año;
+            return Ok(result);
+        }
+        [HttpGet]
+        [Route("TaxiSinChofer")]
+        public ActionResult SinChofer()
+        {
+            ResultApi result = new ResultApi();
+            var NoChofer = dbContext
+                .Taxis
+                .Where(x => !x.Choferes.Any())
+                .ToList();
+            result.Data = NoChofer;
+            result.Message = "Ok";
+            return Ok(result);
+        }
+        [HttpGet]
+        [Route("TaxiId")]
+        public ActionResult TaxiId(int Id)
+        {
+            ResultApi result = new ResultApi();
+            var Taxi = dbContext
+                .Taxis
+                .FirstOrDefault(x => x.Id == Id);
+            if(Taxi == null)
+            {
+                result.Message = $"No se encontro el taxi con el Id {Id}";
+                result.IsError = true;
+                result.Data = Taxi;
+                return BadRequest(result);
+            }
+            dbContext.SaveChanges();
+            result.Data = Taxi;
+            result.Message = "Ok";
+            return Ok(result);
+        }
 
     }
 }

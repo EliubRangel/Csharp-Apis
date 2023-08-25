@@ -139,6 +139,39 @@ namespace Agencia_Taxis.Controllers
 
 
         }
-       
+        [HttpGet]
+        [Route("CP")]
+        public ActionResult PlantaCp(string Cp)
+        {
+            ResultApi result = new ResultApi();
+            var Plantacp = dbContext
+                .Planta
+                .FirstOrDefault(x => x.CodigoPostal == Cp);
+            if(Plantacp == null)
+            {
+                result.Message = $"No se encontro la planta con el Cp {Cp}";
+                result.IsError = true;
+                result.Data = Plantacp;
+                return BadRequest(result);
+            }
+            dbContext.SaveChanges();
+            result.Message = "Ok";
+            result.Data = Plantacp;
+            return Ok(result);
+        }
+        [HttpGet]
+        [Route("PlantaSinTaxis")]
+        public ActionResult PlantaSinTaxis()
+        {
+            ResultApi result = new ResultApi();
+            var NoTaxis = dbContext
+                .Planta
+                .Where(x => !x.Taxis.Any())
+                .ToList();
+            result.Data = NoTaxis;
+            result.Message = "Ok";
+            return Ok(result);
+        }
+
     }
 }

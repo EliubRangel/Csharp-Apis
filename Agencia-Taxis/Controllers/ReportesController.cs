@@ -117,7 +117,29 @@ namespace Agencia_Taxis.Controllers
                 result.Message = "Se cancelo el reporte correctamente";
                 return Ok(result);
             }
+           
         }
+        [HttpGet]
+        [Route("ReporteId")]
+        public ActionResult ReporteId (int Id)
+        {
+            ResultApi result = new ResultApi();
+            var RepId = dbContext
+                .Reportes
+                .FirstOrDefault(x => x.Id == Id);
+            if(RepId== null)
+            {
+                result.Data = RepId;
+                result.IsError = true;
+                result.Message = $"No se encontro el reporte con el Id {Id}";
+
+            }
+            dbContext.SaveChanges();
+            result.Data = RepId;
+            result.Message = "Ok";
+            return Ok(result);
+        }
+     
 
 
 

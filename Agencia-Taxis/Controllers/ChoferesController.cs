@@ -214,16 +214,25 @@ namespace Agencia_Taxis.Controllers
         }
         [HttpGet]
         [Route("ChoferID")]
-        public ActionResult ChoferId(Choferes id)
+        public ActionResult ChoferId(int Id)
         {
             ResultApi result = new ResultApi();
             var ChoferId = dbContext
                 .Choferes
-                .FirstOrDefault(x => x.Id == id.Id);
+                .FirstOrDefault(x => x.Id == Id);
+            if (ChoferId == null)
+            {
+                result.Message = $"No se encontro chofer con el Id {ChoferId}";
+                result.IsError = true;
+                result.Data = ChoferId;
+                return BadRequest(result);
+            }
+            dbContext.SaveChanges();
+            result.Message = "Ok";
             result.Data = ChoferId;
-
+            return Ok(result);
         }
-        
+       
     }
 
 
