@@ -146,7 +146,7 @@ namespace Agencia_Taxis.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("PlantaId")
+                    b.Property<int?>("PlantaId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -194,9 +194,7 @@ namespace Agencia_Taxis.Migrations
                 {
                     b.HasOne("Agencia_Taxis.Entities.Planta", "Planta")
                         .WithMany("Taxis")
-                        .HasForeignKey("PlantaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PlantaId");
 
                     b.Navigation("Planta");
                 });

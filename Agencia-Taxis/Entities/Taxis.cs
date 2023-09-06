@@ -8,14 +8,15 @@ namespace Agencia_Taxis.Entities
         public int Año { get; set; }
         public string Placas { get; set; }
         public string NumeroPlaca { get; set; }
-        public ICollection<Choferes> Choferes { get; set; }
-        public Planta Planta{get;set;}
-        public ICollection<Reportes>Reportes{get;set;}
+        public virtual ICollection<Choferes>? Choferes { get; set; }
+        public virtual Planta? Planta{get;set;}
+        public virtual ICollection<Reportes>? Reportes{get;set;}
 
         public Taxis()
         {
-            this.Choferes= new List<Choferes>();
-           
+            //this.Choferes= new List<Choferes>();
+            ////this.Planta = new Planta();
+            //this.Reportes = new List<Reportes>();
         }
         
       

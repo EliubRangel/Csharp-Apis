@@ -12,7 +12,6 @@ namespace Agencia_Taxis.Controllers
 {
     [ApiController]
     [Route("[Controller]")]
-
     public class ChoferesController : Controller
     {
         private readonly AgenciaDbContext dbContext;
@@ -21,17 +20,22 @@ namespace Agencia_Taxis.Controllers
         {
             this.dbContext = DbContext;
         }
+
         [HttpPost]
         public ActionResult NuevoChofer(Choferes choferes)
         {
             //validar el obj cliente
             ResultApi result = new ResultApi();
             dbContext.Choferes.Add(choferes);
+            //var Edad= dbContext.Choferes
+            //.Where(x=> DateTime.Today.AddYears(-18) >= x.FechaNacimiento && DateTime.Today.AddYears())
+            
             dbContext.SaveChanges();
             result.Message = "Se agrego el chofer correctamente";
             result.Data = choferes;
             return Ok(result);
         }
+
         [HttpGet]
         public ActionResult Get()
         {
@@ -44,6 +48,7 @@ namespace Agencia_Taxis.Controllers
 
             return Ok(result);
         }
+
         [HttpPut]
         public ActionResult ActualizarChofer(Choferes choferes)
         {
@@ -70,6 +75,7 @@ namespace Agencia_Taxis.Controllers
                 return Ok(result);
             }
         }
+
         [HttpDelete]
         public ActionResult EliminarChofer(int Id)
         {
@@ -87,8 +93,8 @@ namespace Agencia_Taxis.Controllers
             result.Message = $"Se elimino el chofer con el {chofer.Id} correctamente";
             result.Data = chofer;
             return Ok(result);
-
         }
+
         [HttpPost]
         [Route("taxi")]
         public ActionResult AsignarTaxi(AsignarTaxiDto dto)
@@ -135,7 +141,6 @@ namespace Agencia_Taxis.Controllers
                 return NotFound(result);
             }
 
-
             if (chofer.Taxis.Count < 2)
             {
 
@@ -150,12 +155,9 @@ namespace Agencia_Taxis.Controllers
             }
 
             result.Message = "Se asigno el taxi correctamente";
-
-
-
-
             return Ok(result);
         }
+
         [HttpGet]
         [Route("MayorEdad")]
         public ActionResult MayorEdad()
@@ -169,6 +171,7 @@ namespace Agencia_Taxis.Controllers
             result.Message = "Ok";
             return Ok(result);
         }
+
         [HttpGet]
         [Route("Licencia")]
         public ActionResult LicenciaExpirada()
@@ -182,6 +185,7 @@ namespace Agencia_Taxis.Controllers
             result.Message = "Ok";
             return Ok(result);
         }
+
         [HttpGet]
        [Route("SinTaxis")]
         public ActionResult SinTaxis()
@@ -213,7 +217,7 @@ namespace Agencia_Taxis.Controllers
             return Ok(result);
         }
         [HttpGet]
-        [Route("ChoferID")]
+        [Route("{Id}")]
         public ActionResult ChoferId(int Id)
         {
             ResultApi result = new ResultApi();

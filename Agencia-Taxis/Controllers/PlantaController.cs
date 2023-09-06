@@ -124,7 +124,8 @@ namespace Agencia_Taxis.Controllers
             {
                 Planta.Taxis.Add(Taxi);
                 Planta.EspaciosDisponibles = Planta.EspaciosDisponibles - 1;
-                Taxi.Planta.EspaciosDisponibles= Taxi.Planta.EspaciosDisponibles+1;
+                if(Taxi.Planta != null)
+                    Taxi.Planta.EspaciosDisponibles= Taxi.Planta.EspaciosDisponibles+1;
                 dbContext.Update(Planta);
                 dbContext.SaveChanges();
             }
@@ -172,6 +173,44 @@ namespace Agencia_Taxis.Controllers
             result.Message = "Ok";
             return Ok(result);
         }
+        [HttpGet]
+        [Route("Fechas")]
+        public ActionResult PlantaFechas(DateTime FechaInicio, DateTime FechaFin)
+        {
+            ResultApi result = new ResultApi();
+            var RangoFecha = dbContext
+                .Planta
+                .FirstOrDefault(x => x.FechaApertura >= FechaInicio && x.FechaApertura <= FechaFin);
+            if (RangoFecha == null)
+            {
+                result.Message = $"No se encontro planta que cumpla con este rango de fechas";
+                result.Data = RangoFecha;
+                result.IsError = true;
+            }
+            dbContext.SaveChanges();
+            result.Message = "Ok";
+            result.Data = RangoFecha;
+            return Ok(result);
+        }
+        //[HttpGet]
+        //[Route("DatosId")]
+        //public ActionResult DatosPlantas(int Id)
+        //{
+        //    ResultApi result = new ResultApi();
+        //    var DatosPlanta = dbContext
+        //        .Planta
+        //        .FirstOrDefault(x => x.Id == Id);
+        //    if(DatosPlanta==null)
+        //    {
+        //        result.Message = $"No se encontro Planta con el id {Id}";
+        //        result.Data = DatosPlanta;
+        //        result.IsError = true;
+        //    }
+        //    dbContext.SaveChanges();
+        //    result.Message = "Ok";
+        //    result.Data = DatosPlanta.
+        //}
+
 
     }
 }

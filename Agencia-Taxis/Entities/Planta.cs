@@ -12,9 +12,8 @@ namespace Agencia_Taxis.Entities
         public int EspaciosDisponibles{get;set;}
         public int EspaciosTotales{get;set;}
         public ICollection<Taxis> Taxis{get;set;}
-
       
-        public Planta ()
+        public Planta()
         {
             this.Taxis=new List<Taxis>();
         }
