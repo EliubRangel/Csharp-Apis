@@ -14,7 +14,8 @@ namespace Agencia_Taxis.Entities
         
         public Choferes()
         {
-            this.Taxis= new List<Taxis>(); 
+            this.Taxis= new List<Taxis>();
+            this.Reportes = new List<Reportes>();
         }
 
 

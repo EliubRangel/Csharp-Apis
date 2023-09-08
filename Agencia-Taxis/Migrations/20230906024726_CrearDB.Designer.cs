@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Agencia_Taxis.Migrations
 {
     [DbContext(typeof(AgenciaDbContext))]
-    [Migration("20230721023724_NewEntitiePlanta")]
-    partial class NewEntitiePlanta
+    [Migration("20230906024726_CrearDB")]
+    partial class CrearDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -89,6 +89,40 @@ namespace Agencia_Taxis.Migrations
                     b.ToTable("Planta");
                 });
 
+            modelBuilder.Entity("Agencia_Taxis.Entities.Reportes", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("ChoferId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Estatus")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("RazonMulta")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TaxiId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChoferId");
+
+                    b.HasIndex("TaxiId");
+
+                    b.ToTable("Reportes");
+                });
+
             modelBuilder.Entity("Agencia_Taxis.Entities.Taxis", b =>
                 {
                     b.Property<int>("Id")
@@ -114,7 +148,7 @@ namespace Agencia_Taxis.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("PlantaId")
+                    b.Property<int?>("PlantaId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -139,13 +173,30 @@ namespace Agencia_Taxis.Migrations
                     b.ToTable("ChoferesTaxis");
                 });
 
+            modelBuilder.Entity("Agencia_Taxis.Entities.Reportes", b =>
+                {
+                    b.HasOne("Agencia_Taxis.Entities.Choferes", "Chofer")
+                        .WithMany("Reportes")
+                        .HasForeignKey("ChoferId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Agencia_Taxis.Entities.Taxis", "Taxi")
+                        .WithMany("Reportes")
+                        .HasForeignKey("TaxiId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chofer");
+
+                    b.Navigation("Taxi");
+                });
+
             modelBuilder.Entity("Agencia_Taxis.Entities.Taxis", b =>
                 {
                     b.HasOne("Agencia_Taxis.Entities.Planta", "Planta")
                         .WithMany("Taxis")
-                        .HasForeignKey("PlantaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PlantaId");
 
                     b.Navigation("Planta");
                 });
@@ -165,9 +216,19 @@ namespace Agencia_Taxis.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Agencia_Taxis.Entities.Choferes", b =>
+                {
+                    b.Navigation("Reportes");
+                });
+
             modelBuilder.Entity("Agencia_Taxis.Entities.Planta", b =>
                 {
                     b.Navigation("Taxis");
+                });
+
+            modelBuilder.Entity("Agencia_Taxis.Entities.Taxis", b =>
+                {
+                    b.Navigation("Reportes");
                 });
 #pragma warning restore 612, 618
         }

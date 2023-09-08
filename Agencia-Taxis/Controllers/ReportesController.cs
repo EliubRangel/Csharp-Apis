@@ -39,8 +39,8 @@ namespace Agencia_Taxis.Controllers
 
             //valida que el id del chofer que recibimos por paramtro
             //exista en la tabla de chofer en db
-            var Chof = dbContext.Choferes.FirstOrDefault(c => c.Id == reportes.ChoferId);
-            if (Chof == null)
+            var chofer = dbContext.Choferes.FirstOrDefault(c => c.Id == reportes.ChoferId);
+            if (chofer == null)
             {
                 result.Message = "El Id del Chofer no existe";
                 return BadRequest(result);
@@ -60,7 +60,7 @@ namespace Agencia_Taxis.Controllers
         public ActionResult ConsultarReporte(int idChofer, bool includeAll = false)
         {
             ResultApi result = new ResultApi();
-            var Reportes = dbContext.Reportes
+            var reportes = dbContext.Reportes
                 //si includeall es falso filtra con la condicion de estatus igual a abierto
                 //si es true ignora la condicion de estatus igual a abierto 
                 .Where(reporte => (includeAll || reporte.Estatus == Estatus.Abierto)
@@ -69,7 +69,7 @@ namespace Agencia_Taxis.Controllers
             // Va a la db y trae los registros que cumplieron con la condicion del where
 
 
-            result.Data = Reportes;
+            result.Data = reportes;
             result.Message = "Ok";
             return Ok(result);
         }
@@ -79,8 +79,8 @@ namespace Agencia_Taxis.Controllers
 
         {
             ResultApi result = new ResultApi();
-            var Repo = dbContext.Reportes.FirstOrDefault(x => x.Id == ID);
-            if(Repo == null)
+            var reporte = dbContext.Reportes.FirstOrDefault(x => x.Id == ID);
+            if(reporte == null)
             {
                 result.Message = "El Id del reporte no existe";
                 result.Data = true;
@@ -89,10 +89,10 @@ namespace Agencia_Taxis.Controllers
 
             else
             {
-                Repo.Estatus = Estatus.Resuelto;
-                dbContext.Update(Repo);
+                reporte.Estatus = Estatus.Resuelto;
+                dbContext.Update(reporte);
                 dbContext.SaveChanges();
-                result.Data = Repo;
+                result.Data = reporte;
                 result.Message = "Se cambio el estatus correctamente";
                 return Ok(result);
             }
@@ -101,8 +101,8 @@ namespace Agencia_Taxis.Controllers
         public ActionResult CancelarReporte(int Id)
         {
             ResultApi result = new ResultApi();
-            var Rep = dbContext.Reportes.FirstOrDefault(x => x.Id == Id);
-            if(Rep == null)
+            var reporte = dbContext.Reportes.FirstOrDefault(x => x.Id == Id);
+            if(reporte == null)
             {
                 result.Message = "El id del reporte no existe";
                 result.Data = true;
@@ -110,32 +110,32 @@ namespace Agencia_Taxis.Controllers
             }
             else
             {
-                Rep.Estatus = Estatus.Cancelado;
-                dbContext.Update(Rep);
+                reporte.Estatus = Estatus.Cancelado;
+                dbContext.Update(reporte);
                 dbContext.SaveChanges();
-                result.Data = Rep;
+                result.Data = reporte;
                 result.Message = "Se cancelo el reporte correctamente";
                 return Ok(result);
             }
            
         }
         [HttpGet]
-        [Route("ReporteId")]
+        [Route("{id}")]
         public ActionResult ReporteId (int Id)
         {
             ResultApi result = new ResultApi();
-            var RepId = dbContext
+            var reporte = dbContext
                 .Reportes
                 .FirstOrDefault(x => x.Id == Id);
-            if(RepId== null)
+            if(reporte== null)
             {
-                result.Data = RepId;
+                result.Data = reporte;
                 result.IsError = true;
                 result.Message = $"No se encontro el reporte con el Id {Id}";
 
             }
             dbContext.SaveChanges();
-            result.Data = RepId;
+            result.Data = reporte;
             result.Message = "Ok";
             return Ok(result);
         }

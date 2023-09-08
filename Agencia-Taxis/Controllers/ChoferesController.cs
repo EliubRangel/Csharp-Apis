@@ -12,7 +12,6 @@ namespace Agencia_Taxis.Controllers
 {
     [ApiController]
     [Route("[Controller]")]
-
     public class ChoferesController : Controller
     {
         private readonly AgenciaDbContext dbContext;
@@ -21,17 +20,22 @@ namespace Agencia_Taxis.Controllers
         {
             this.dbContext = DbContext;
         }
+
         [HttpPost]
         public ActionResult NuevoChofer(Choferes choferes)
         {
             //validar el obj cliente
             ResultApi result = new ResultApi();
             dbContext.Choferes.Add(choferes);
+            //var Edad= dbContext.Choferes
+            //.Where(x=> DateTime.Today.AddYears(-18) >= x.FechaNacimiento && DateTime.Today.AddYears())
+            
             dbContext.SaveChanges();
             result.Message = "Se agrego el chofer correctamente";
             result.Data = choferes;
             return Ok(result);
         }
+
         [HttpGet]
         public ActionResult Get()
         {
@@ -44,34 +48,36 @@ namespace Agencia_Taxis.Controllers
 
             return Ok(result);
         }
+
         [HttpPut]
         public ActionResult ActualizarChofer(Choferes choferes)
         {
             ResultApi result = new ResultApi();
-            var cte = dbContext.Choferes.FirstOrDefault(x => x.Id == choferes.Id);
-            if (cte == null)
+            var chofer = dbContext.Choferes.FirstOrDefault(x => x.Id == choferes.Id);
+            if (chofer == null)
             {
-                result.Message = $"No se encontro el chofer con el Id {cte.Id}";
+                result.Message = $"No se encontro el chofer con el Id {chofer.Id}";
                 result.IsError = true;
                 return NotFound(result);
             }
             else
             {
-                cte.Nombre = choferes.Nombre;
-                cte.Apellido = choferes.Apellido;
-                cte.NumeroLicencia = choferes.NumeroLicencia;
-                cte.FechaExpiracion = choferes.FechaExpiracion;
-                cte.FechaNacimiento = choferes.FechaNacimiento;
+                chofer.Nombre = choferes.Nombre;
+                chofer.Apellido = choferes.Apellido;
+                chofer.NumeroLicencia = choferes.NumeroLicencia;
+                chofer.FechaExpiracion = choferes.FechaExpiracion;
+                chofer.FechaNacimiento = choferes.FechaNacimiento;
 
-                dbContext.Update(cte);
+                dbContext.Update(chofer);
                 dbContext.SaveChanges();
-                result.Data = cte;
-                result.Message = $"Se modifico el chofer con el Id {cte.Id} correctamente";
+                result.Data = chofer;
+                result.Message = $"Se modifico el chofer con el Id {chofer.Id} correctamente";
                 return Ok(result);
             }
         }
+
         [HttpDelete]
-        public ActionResult EliminarChofer(int Id)
+        public ActionResult Eliminar(int Id)
         {
             ResultApi result = new ResultApi();
             var chofer = dbContext.Choferes.FirstOrDefault(x => x.Id == Id);
@@ -87,8 +93,8 @@ namespace Agencia_Taxis.Controllers
             result.Message = $"Se elimino el chofer con el {chofer.Id} correctamente";
             result.Data = chofer;
             return Ok(result);
-
         }
+
         [HttpPost]
         [Route("taxi")]
         public ActionResult AsignarTaxi(AsignarTaxiDto dto)
@@ -135,7 +141,6 @@ namespace Agencia_Taxis.Controllers
                 return NotFound(result);
             }
 
-
             if (chofer.Taxis.Count < 2)
             {
 
@@ -150,44 +155,43 @@ namespace Agencia_Taxis.Controllers
             }
 
             result.Message = "Se asigno el taxi correctamente";
-
-
-
-
             return Ok(result);
         }
+
         [HttpGet]
         [Route("MayorEdad")]
         public ActionResult MayorEdad()
         {
             ResultApi result = new ResultApi();
-            var MayorDeEdad = dbContext
+            var chofer = dbContext
                 .Choferes
                 .Where(x => DateTime.Today.AddYears(-50) >= x.FechaNacimiento)
                 .ToList();
-            result.Data = MayorDeEdad;
+            result.Data = chofer;
             result.Message = "Ok";
             return Ok(result);
         }
+
         [HttpGet]
         [Route("Licencia")]
         public ActionResult LicenciaExpirada()
         {
             ResultApi result =new ResultApi();
-            var Expiracion = dbContext
+            var chofer = dbContext
                 .Choferes
                 .Where(x => DateTime.Today >= x.FechaExpiracion)
                 .ToList();
-            result.Data = Expiracion;
+            result.Data = chofer;
             result.Message = "Ok";
             return Ok(result);
         }
+
         [HttpGet]
        [Route("SinTaxis")]
         public ActionResult SinTaxis()
         {
             ResultApi result = new ResultApi();
-            var SinTaxis = dbContext
+            var chofer = dbContext
                 .Choferes
                 //el metodo any sin paramatros te dice si una
                 // coleccion contiene elementos.
@@ -195,7 +199,7 @@ namespace Agencia_Taxis.Controllers
                 //que se incluiran los choferes que no tengan taxis
                 .Where(x => !x.Taxis.Any())
                 .ToList();
-            result.Data = SinTaxis;
+            result.Data = chofer;
             result.Message = "Ok";
             return Ok(result);
         }
@@ -204,16 +208,16 @@ namespace Agencia_Taxis.Controllers
         public ActionResult ChoferEstatusAbierto()
         {
             ResultApi result = new ResultApi();
-            var EstatusAbierto = dbContext
+            var reportes = dbContext
                 .Reportes
                 .Where(x => x.Estatus == Estatus.Abierto)
                 .ToList();
-            result.Data = EstatusAbierto;
+            result.Data = reportes;
             result.Message = "Ok";
             return Ok(result);
         }
         [HttpGet]
-        [Route("ChoferID")]
+        [Route("{Id}")]
         public ActionResult ChoferId(int Id)
         {
             ResultApi result = new ResultApi();
@@ -230,6 +234,26 @@ namespace Agencia_Taxis.Controllers
             dbContext.SaveChanges();
             result.Message = "Ok";
             result.Data = ChoferId;
+            return Ok(result);
+        }
+        [HttpGet]
+        [Route("conTaxis")]
+        public ActionResult ConTaxi()
+        {
+            ResultApi result = new ResultApi();
+            var chofer = dbContext
+                .Choferes
+                .Where(x => x.Taxis.Any())
+                .Select(x => x.Nombre)
+                .ToList();
+            if(chofer == null)
+            {
+                result.Message = "No se encontraron choferes con taxis";
+                result.IsError = true;
+                return BadRequest(result);
+            }
+            result.Data = chofer;
+            result.Message = "Ok";
             return Ok(result);
         }
        
