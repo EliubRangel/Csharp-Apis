@@ -83,18 +83,18 @@ namespace Agencia_Taxis.Controllers
         public ActionResult EliminarPlanta(int Id)
         {
             ResultApi result = new ResultApi();
-            var Planta = dbContext.Planta.FirstOrDefault(x => x.Id == Id);
-            if (Planta == null)
+            var planta = dbContext.Planta.FirstOrDefault(x => x.Id == Id);
+            if (planta == null)
             {
-                result.Message = $"No se encontro la planta con el Id{Planta.Id}";
+                result.Message = $"No se encontro la planta con el Id{planta.Id}";
                 result.IsError = true;
-                result.Data = Planta;
+                result.Data = planta;
                 return NotFound(result);
             }
-            dbContext.Remove(Planta);
+            dbContext.Remove(planta);
             dbContext.SaveChanges();
-            result.Message = $"Se elimino el chofer con el {Planta.Id} correctamente";
-            result.Data = Planta;
+            result.Message = $"Se elimino el chofer con el {planta.Id} correctamente";
+            result.Data = planta;
             return Ok(result);
 
         }
@@ -103,8 +103,8 @@ namespace Agencia_Taxis.Controllers
         public ActionResult TrasladarTaxi(TrasladarTaxiDto dto)
         {
             ResultApi result = new ResultApi();
-            var Taxi = dbContext.Taxis.Include(x=> x.Planta).FirstOrDefault(x => x.Id == dto.IdTaxi);
-            if (Taxi == null)
+            var taxi = dbContext.Taxis.Include(x=> x.Planta).FirstOrDefault(x => x.Id == dto.IdTaxi);
+            if (taxi == null)
             {
                 result.Message = $"No se encontro el taxi con el Id {dto.IdTaxi}";
                 result.IsError = true;
@@ -122,10 +122,10 @@ namespace Agencia_Taxis.Controllers
             }
             if (Planta.EspaciosDisponibles >= 1)
             {
-                Planta.Taxis.Add(Taxi);
+                Planta.Taxis.Add(taxi);
                 Planta.EspaciosDisponibles = Planta.EspaciosDisponibles - 1;
-                if(Taxi.Planta != null)
-                    Taxi.Planta.EspaciosDisponibles= Taxi.Planta.EspaciosDisponibles+1;
+                if(taxi.Planta != null)
+                    taxi.Planta.EspaciosDisponibles= taxi.Planta.EspaciosDisponibles+1;
                 dbContext.Update(Planta);
                 dbContext.SaveChanges();
             }
@@ -145,31 +145,31 @@ namespace Agencia_Taxis.Controllers
         public ActionResult PlantaCp(string Cp)
         {
             ResultApi result = new ResultApi();
-            var Plantacp = dbContext
+            var planta = dbContext
                 .Planta
                 .FirstOrDefault(x => x.CodigoPostal == Cp);
-            if(Plantacp == null)
+            if(planta == null)
             {
                 result.Message = $"No se encontro la planta con el Cp {Cp}";
                 result.IsError = true;
-                result.Data = Plantacp;
+                result.Data = planta;
                 return BadRequest(result);
             }
             dbContext.SaveChanges();
             result.Message = "Ok";
-            result.Data = Plantacp;
+            result.Data = planta;
             return Ok(result);
         }
         [HttpGet]
-        [Route("PlantaSinTaxis")]
+        [Route("sinTaxis")]
         public ActionResult PlantaSinTaxis()
         {
             ResultApi result = new ResultApi();
-            var NoTaxis = dbContext
+            var planta = dbContext
                 .Planta
                 .Where(x => !x.Taxis.Any())
                 .ToList();
-            result.Data = NoTaxis;
+            result.Data = planta;
             result.Message = "Ok";
             return Ok(result);
         }
@@ -178,39 +178,69 @@ namespace Agencia_Taxis.Controllers
         public ActionResult PlantaFechas(DateTime FechaInicio, DateTime FechaFin)
         {
             ResultApi result = new ResultApi();
-            var RangoFecha = dbContext
+            var planta = dbContext
                 .Planta
                 .FirstOrDefault(x => x.FechaApertura >= FechaInicio && x.FechaApertura <= FechaFin);
-            if (RangoFecha == null)
+            if (planta == null)
             {
                 result.Message = $"No se encontro planta que cumpla con este rango de fechas";
-                result.Data = RangoFecha;
+                result.Data = planta;
                 result.IsError = true;
             }
             dbContext.SaveChanges();
             result.Message = "Ok";
-            result.Data = RangoFecha;
+            result.Data = planta;
             return Ok(result);
         }
-        //[HttpGet]
-        //[Route("DatosId")]
-        //public ActionResult DatosPlantas(int Id)
-        //{
-        //    ResultApi result = new ResultApi();
-        //    var DatosPlanta = dbContext
-        //        .Planta
-        //        .FirstOrDefault(x => x.Id == Id);
-        //    if(DatosPlanta==null)
-        //    {
-        //        result.Message = $"No se encontro Planta con el id {Id}";
-        //        result.Data = DatosPlanta;
-        //        result.IsError = true;
-        //    }
-        //    dbContext.SaveChanges();
-        //    result.Message = "Ok";
-        //    result.Data = DatosPlanta.
-        //}
+        [HttpGet]
+        [Route("Datos")]
+        public ActionResult DatosPlantas(int Id)
+        {
+            ResultApi result = new ResultApi();
+            var direccion = dbContext
+                .Planta
+                .Where(x => x.Id == Id)
+                .Select((Planta x) => new DireccionPlantaDto
+                {
+                    Colonia = x.Colonia,
+                    ZipCode = x.CodigoPostal,
+                    Direccion = x.Direccion
+                })
+                .FirstOrDefault();
+            if(direccion== null)
+            {
+                result.Message = $"No se encontro planta con el Id {Id}";
+                result.Data = direccion;
+                result.IsError = true;
+                return BadRequest(result);
+            }
+            result.Message = "Ok";
+            result.Data = direccion;
+            return Ok(result);
+                
 
+        }
+     
+        [HttpGet]
+        [Route("Disponibilidad")]
+        public ActionResult EspaciosDisponibles()
+        {
+            ResultApi result = new ResultApi();
+            var planta = dbContext
+                .Planta
+                .Where(x => x.EspaciosDisponibles >= 1)
+                .Select(x => x.EspaciosDisponibles);
+            if(EspaciosDisponibles== null)
+            {
+                result.Message = "No se encontraron espacios disponibles";
+                result.Data = planta;
+                result.IsError = true;
+                return BadRequest(result);
+            }
+            result.Data = planta;
+            result.Message = "Ok";
+            return Ok(result);
+        } 
 
     }
 }

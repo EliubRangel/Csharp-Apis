@@ -45,25 +45,25 @@ namespace Agencia_Taxis.Controllers
         public ActionResult ActualizarTaxi(Taxis taxis)
         {
             ResultApi result = new ResultApi();
-            var cte = dbContext.Taxis.FirstOrDefault(x => x.Id == taxis.Id);
-            if (cte == null)
+            var taxi = dbContext.Taxis.FirstOrDefault(x => x.Id == taxis.Id);
+            if (taxi == null)
             {
-                result.Message = $"No se encontro el taxi con el Id {cte.Id}";
+                result.Message = $"No se encontro el taxi con el Id {taxi.Id}";
                 result.IsError = true;
                 return NotFound(result);
             }
             else
             {
-                cte.Marca = taxis.Marca;
-                cte.Modelo = taxis.Modelo;
-                cte.Año = taxis.Año;
-                cte.Placas = taxis.Placas;
-                cte.NumeroPlaca = taxis.NumeroPlaca;
+                taxi.Marca = taxis.Marca;
+                taxi.Modelo = taxis.Modelo;
+                taxi.Año = taxis.Año;
+                taxi.Placas = taxis.Placas;
+                taxi.NumeroPlaca = taxis.NumeroPlaca;
 
-                dbContext.Update(cte);
+                dbContext.Update(taxi);
                 dbContext.SaveChanges();
-                result.Data = cte;
-                result.Message = $"Se modifico el taxi con el Id {cte.Id} correctamente";
+                result.Data = taxi;
+                result.Message = $"Se modifico el taxi con el Id {taxi.Id} correctamente";
                 return Ok(result);
             }
 
@@ -73,18 +73,18 @@ namespace Agencia_Taxis.Controllers
         public ActionResult EliminarTaxi(int Id)
         {
             ResultApi result = new ResultApi();
-            var cte = dbContext.Taxis.FirstOrDefault(x => x.Id == Id);
-            if (cte == null)
+            var taxi = dbContext.Taxis.FirstOrDefault(x => x.Id == Id);
+            if (taxi == null)
             {
-                result.Message = $"No se encontro el taxi con el Id{cte.Id}";
+                result.Message = $"No se encontro el taxi con el Id{taxi.Id}";
                 result.IsError = true;
-                result.Data = cte;
+                result.Data = taxi;
                 return NotFound("No se encontro el taxi con el Id");
             }
-            dbContext.Remove(cte);
+            dbContext.Remove(taxi);
             dbContext.SaveChanges();
-            result.Message = $"Se elimino taxi con el Id {cte.Id} correctamente";
-            result.Data = cte;
+            result.Message = $"Se elimino taxi con el Id {taxi.Id} correctamente";
+            result.Data = taxi;
             return Ok(result);
 
         }
@@ -130,35 +130,35 @@ namespace Agencia_Taxis.Controllers
             return Ok(result);
         }
         [HttpGet]
-        [Route("Añotaxi")]
-        public ActionResult AñodeTaxi(string Marca)
+        [Route("marca/{marca}")]
+        public ActionResult YearTaxi(string Marca)
         {
             ResultApi result = new ResultApi();
-            var TaxiMarca = dbContext
+            var taxi = dbContext
                 .Taxis
                 .FirstOrDefault(x => x.Marca == Marca);
-            if (TaxiMarca == null)
+            if (taxi == null)
             {
-                result.Message = $"No se encontro el taxi de la marca {TaxiMarca}";
+                result.Message = $"No se encontro el taxi de la marca {taxi}";
                 result.IsError = true;
-                result.Data = TaxiMarca;
+                result.Data = taxi;
                 return BadRequest(result);
             }
             dbContext.SaveChanges();
             result.Message = "Ok";
-            result.Data = TaxiMarca.Año;
+            result.Data = taxi.Año;
             return Ok(result);
         }
         [HttpGet]
-        [Route("TaxiSinChofer")]
+        [Route("SinChofer")]
         public ActionResult SinChofer()
         {
             ResultApi result = new ResultApi();
-            var NoChofer = dbContext
+            var taxi = dbContext
                 .Taxis
                 .Where(x => !x.Choferes.Any())
                 .ToList();
-            result.Data = NoChofer;
+            result.Data = taxi;
             result.Message = "Ok";
             return Ok(result);
         }
@@ -181,6 +181,28 @@ namespace Agencia_Taxis.Controllers
             result.Data = Taxi;
             result.Message = "Ok";
             return Ok(result);
+        }
+        [HttpGet]
+        [Route("honda")]
+        public ActionResult MarcaHonda()
+        {
+            ResultApi result = new ResultApi();
+            var taxi = dbContext
+                .Taxis
+                .Where(x => x.Marca == "honda")
+                .Select(x => x.NumeroPlaca)
+                .ToList();
+            if(taxi == null)
+            {
+                result.Message = "No se encontraron taxis de de marca Honda ";
+                result.Data = taxi;
+                result.IsError = true;
+                return BadRequest(result);
+            }
+            result.Data = taxi;
+            result.Message = "Ok";
+            return Ok(result);
+            
         }
 
     }
