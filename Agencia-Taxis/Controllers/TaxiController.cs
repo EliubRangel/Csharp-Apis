@@ -56,7 +56,7 @@ namespace Agencia_Taxis.Controllers
             {
                 taxi.Marca = taxis.Marca;
                 taxi.Modelo = taxis.Modelo;
-                taxi.Año = taxis.Año;
+                taxi.Anio = taxis.Anio;
                 taxi.Placas = taxis.Placas;
                 taxi.NumeroPlaca = taxis.NumeroPlaca;
 
@@ -146,7 +146,7 @@ namespace Agencia_Taxis.Controllers
             }
             dbContext.SaveChanges();
             result.Message = "Ok";
-            result.Data = taxi.Año;
+            result.Data = taxi.Anio;
             return Ok(result);
         }
         [HttpGet]
@@ -203,6 +203,49 @@ namespace Agencia_Taxis.Controllers
             result.Message = "Ok";
             return Ok(result);
             
+        }
+        [HttpGet]
+        [Route("anio")]
+        public ActionResult InformacionTaxi(int Anio)
+        {
+            ResultApi result = new ResultApi();
+            var informacion = dbContext
+                .Taxis
+                .Where(x => x.Anio == Anio)
+                .Select((Taxis x) => new InformacionTaxiDto
+                {
+                    Marca = x.Marca,
+                    Modelo = x.Modelo,
+                    Anio = x.Anio
+                }).FirstOrDefault();
+            if(informacion== null)
+            {
+                result.Message = $"No se encontraron vehiculos con el anio {Anio}";
+                result.Data = informacion;
+                result.IsError = true;
+                return BadRequest(result);
+            }
+            result.Data = informacion;
+            result.Message = "Ok";
+            return Ok(result);
+        }
+        [HttpGet]
+        [Route("informacionReportes")]
+        public ActionResult InformacionReporte()
+        {
+            ResultApi result = new ResultApi();
+            var informacion=dbContext
+                .Reportes
+                .Where(x=> x.Estatus == Estatus.Abierto)
+                .Select((Taxis x, Choferes j, Reportes a)=> new InformacionTaxiDto
+                {
+                  Marca= x.Marca,
+                  Modelo= x.Modelo,
+                  Placas= x.NumeroPlaca,
+                  RazonMulta= a.RazonMulta,
+                  NombreChofer=j.Nombre
+                })
+
         }
 
     }

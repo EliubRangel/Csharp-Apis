@@ -5,7 +5,7 @@ namespace Agencia_Taxis.Entities
         public int Id { get; set; }
         public string Marca { get; set; }
         public string Modelo { get; set; }
-        public int Año { get; set; }
+        public int Anio { get; set; }
         public string Placas { get; set; }
         public string NumeroPlaca { get; set; }
         public virtual ICollection<Choferes>? Choferes { get; set; }

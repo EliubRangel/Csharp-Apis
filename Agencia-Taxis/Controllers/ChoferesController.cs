@@ -27,8 +27,8 @@ namespace Agencia_Taxis.Controllers
             //validar el obj cliente
             ResultApi result = new ResultApi();
             dbContext.Choferes.Add(choferes);
-            //var Edad= dbContext.Choferes
-            //.Where(x=> DateTime.Today.AddYears(-18) >= x.FechaNacimiento && DateTime.Today.AddYears())
+            var chofer= dbContext.Choferes
+            .Where(x=> DateTime.Today.AddYears(-18) >= x.FechaNacimiento && DateTime.Today.AddYears())
             
             dbContext.SaveChanges();
             result.Message = "Se agrego el chofer correctamente";
