@@ -9,6 +9,7 @@ namespace Agencia_Taxis.models
         public string NombreChofer { get; set; }
         public string RazonMulta { get; set; }
         public string Placas { get; set; }
+        public string DescripcionMulta { get; set; }
     }
 }
 

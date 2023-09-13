@@ -192,7 +192,7 @@ namespace Agencia_Taxis.Controllers
                 .Where(x => x.Marca == "honda")
                 .Select(x => x.NumeroPlaca)
                 .ToList();
-            if(taxi == null)
+            if (taxi == null)
             {
                 result.Message = "No se encontraron taxis de de marca Honda ";
                 result.Data = taxi;
@@ -202,7 +202,7 @@ namespace Agencia_Taxis.Controllers
             result.Data = taxi;
             result.Message = "Ok";
             return Ok(result);
-            
+
         }
         [HttpGet]
         [Route("anio")]
@@ -217,8 +217,8 @@ namespace Agencia_Taxis.Controllers
                     Marca = x.Marca,
                     Modelo = x.Modelo,
                     Anio = x.Anio
-                }).FirstOrDefault();
-            if(informacion== null)
+                }).ToList();
+            if (informacion == null)
             {
                 result.Message = $"No se encontraron vehiculos con el anio {Anio}";
                 result.Data = informacion;
@@ -229,23 +229,31 @@ namespace Agencia_Taxis.Controllers
             result.Message = "Ok";
             return Ok(result);
         }
-        [HttpGet]
-        [Route("informacionReportes")]
+        [HttpGet("informacionReportes")]
         public ActionResult InformacionReporte()
         {
             ResultApi result = new ResultApi();
-            var informacion=dbContext
+            var informacion = dbContext
                 .Reportes
-                .Where(x=> x.Estatus == Estatus.Abierto)
-                .Select((Taxis x, Choferes j, Reportes a)=> new InformacionTaxiDto
+                .Where(r => r.Estatus == Estatus.Abierto)
+                .Select(r => new InformacionTaxiDto
                 {
-                  Marca= x.Marca,
-                  Modelo= x.Modelo,
-                  Placas= x.NumeroPlaca,
-                  RazonMulta= a.RazonMulta,
-                  NombreChofer=j.Nombre
+                    NombreChofer = $"{r.Chofer.Nombre} {r.Chofer.Apellido}",
+                    RazonMulta = r.RazonMulta.ToString(),
+                    DescripcionMulta = r.Descripcion,
+                    Anio = r.Taxi.Anio,
+                    Marca = r.Taxi.Marca
                 })
-
+                .ToList();
+            if (informacion == null)
+            {
+                result.Message = "No se encontraron taxis con reportes abiertos";
+                result.IsError = true;
+                return BadRequest(result);
+            }
+            result.Data = informacion;
+            result.Message = "ok";
+            return Ok(informacion);
         }
 
     }

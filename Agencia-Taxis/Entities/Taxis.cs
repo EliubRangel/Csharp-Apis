@@ -1,10 +1,14 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Agencia_Taxis.Entities
 {
+    //[Table("TaxiCDmx")]
     public class Taxis
     {
         public int Id { get; set; }
         public string Marca { get; set; }
         public string Modelo { get; set; }
+        [Column("Año")]
         public int Anio { get; set; }
         public string Placas { get; set; }
         public string NumeroPlaca { get; set; }
