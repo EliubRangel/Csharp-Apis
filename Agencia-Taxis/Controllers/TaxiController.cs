@@ -209,7 +209,7 @@ namespace Agencia_Taxis.Controllers
         public ActionResult InformacionTaxi(int Anio)
         {
             ResultApi result = new ResultApi();
-            var informacion = dbContext
+            var taxi = dbContext
                 .Taxis
                 .Where(x => x.Anio == Anio)
                 .Select((Taxis x) => new InformacionTaxiDto
@@ -218,14 +218,14 @@ namespace Agencia_Taxis.Controllers
                     Modelo = x.Modelo,
                     Anio = x.Anio
                 }).ToList();
-            if (informacion == null)
+            if (taxi == null)
             {
                 result.Message = $"No se encontraron vehiculos con el anio {Anio}";
-                result.Data = informacion;
+                result.Data = taxi;
                 result.IsError = true;
                 return BadRequest(result);
             }
-            result.Data = informacion;
+            result.Data = taxi;
             result.Message = "Ok";
             return Ok(result);
         }
@@ -253,7 +253,7 @@ namespace Agencia_Taxis.Controllers
             }
             result.Data = informacion;
             result.Message = "ok";
-            return Ok(informacion);
+            return Ok(result);
         }
 
     }
