@@ -56,7 +56,7 @@ namespace Agencia_Taxis.Controllers
             {
                 taxi.Marca = taxis.Marca;
                 taxi.Modelo = taxis.Modelo;
-                taxi.Año = taxis.Año;
+                taxi.Anio = taxis.Anio;
                 taxi.Placas = taxis.Placas;
                 taxi.NumeroPlaca = taxis.NumeroPlaca;
 
@@ -146,7 +146,7 @@ namespace Agencia_Taxis.Controllers
             }
             dbContext.SaveChanges();
             result.Message = "Ok";
-            result.Data = taxi.Año;
+            result.Data = taxi.Anio;
             return Ok(result);
         }
         [HttpGet]
@@ -192,7 +192,7 @@ namespace Agencia_Taxis.Controllers
                 .Where(x => x.Marca == "honda")
                 .Select(x => x.NumeroPlaca)
                 .ToList();
-            if(taxi == null)
+            if (taxi == null)
             {
                 result.Message = "No se encontraron taxis de de marca Honda ";
                 result.Data = taxi;
@@ -202,7 +202,58 @@ namespace Agencia_Taxis.Controllers
             result.Data = taxi;
             result.Message = "Ok";
             return Ok(result);
-            
+
+        }
+        [HttpGet]
+        [Route("anio")]
+        public ActionResult InformacionTaxi(int Anio)
+        {
+            ResultApi result = new ResultApi();
+            var informacion = dbContext
+                .Taxis
+                .Where(x => x.Anio == Anio)
+                .Select((Taxis x) => new InformacionTaxiDto
+                {
+                    Marca = x.Marca,
+                    Modelo = x.Modelo,
+                    Anio = x.Anio
+                }).ToList();
+            if (informacion == null)
+            {
+                result.Message = $"No se encontraron vehiculos con el anio {Anio}";
+                result.Data = informacion;
+                result.IsError = true;
+                return BadRequest(result);
+            }
+            result.Data = informacion;
+            result.Message = "Ok";
+            return Ok(result);
+        }
+        [HttpGet("informacionReportes")]
+        public ActionResult InformacionReporte()
+        {
+            ResultApi result = new ResultApi();
+            var informacion = dbContext
+                .Reportes
+                .Where(r => r.Estatus == Estatus.Abierto)
+                .Select(r => new InformacionTaxiDto
+                {
+                    NombreChofer = $"{r.Chofer.Nombre} {r.Chofer.Apellido}",
+                    RazonMulta = r.RazonMulta.ToString(),
+                    DescripcionMulta = r.Descripcion,
+                    Anio = r.Taxi.Anio,
+                    Marca = r.Taxi.Marca
+                })
+                .ToList();
+            if (informacion == null)
+            {
+                result.Message = "No se encontraron taxis con reportes abiertos";
+                result.IsError = true;
+                return BadRequest(result);
+            }
+            result.Data = informacion;
+            result.Message = "ok";
+            return Ok(informacion);
         }
 
     }
