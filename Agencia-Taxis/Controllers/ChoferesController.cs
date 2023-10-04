@@ -26,14 +26,23 @@ namespace Agencia_Taxis.Controllers
         {
             //validar el obj cliente
             ResultApi result = new ResultApi();
-            dbContext.Choferes.Add(choferes);
-            //var Edad= dbContext.Choferes
-            //.Where(x=> DateTime.Today.AddYears(-18) >= x.FechaNacimiento && DateTime.Today.AddYears())
+            int edad = DateTime.Now.Year - choferes.FechaNacimiento.Year;
+            if(edad > 18 && edad < 80)
+            {
+                dbContext.Choferes.Add(choferes);
+                dbContext.SaveChanges();
+                result.Message = "Se agrego el chofer correctamente";
+                result.Data = choferes;
+                return Ok(result);
+            }
+            else
+            {
+                result.Message = $" Edad del chofer no es permitida";
+                result.Data = edad;
+                result.IsError = true;
+                return BadRequest(result);
+            }
             
-            dbContext.SaveChanges();
-            result.Message = "Se agrego el chofer correctamente";
-            result.Data = choferes;
-            return Ok(result);
         }
 
         [HttpGet]
