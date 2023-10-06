@@ -5,7 +5,10 @@ namespace Agencia_Taxis.Models
     {
         public string Message { get; set; }
         public bool IsError { get; set; }
+        public int StatusCode { get; set; }
         public object Data { get; set; }
+
     }
 }
 
+ 

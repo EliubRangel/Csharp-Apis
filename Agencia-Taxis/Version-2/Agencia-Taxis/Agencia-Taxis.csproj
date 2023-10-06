@@ -17,12 +17,14 @@
 
   <ItemGroup>
     <None Remove="Entities\" />
-    <None Remove="DbContext\" />
     <None Remove="Models\" />
+    <None Remove="Services\" />
+    <None Remove="DbContexts\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Entities\" />
-    <Folder Include="DbContext\" />
     <Folder Include="Models\" />
+    <Folder Include="Services\" />
+    <Folder Include="DbContexts\" />
   </ItemGroup>
 </Project>
