@@ -1,4 +1,5 @@
 ﻿using System;
+using Agencia_Taxis.Entities;
 using Agencia_Taxis.Models;
 using Agencia_Taxis.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +25,23 @@ namespace Agencia_Taxis.Controllers
             var result = _choferService.AsiganrTaxi(dto);
             return StatusCode(result.StatusCode, result);
         }
+
+        [HttpPost]
+        [Route("newdriver")]
+        public ActionResult NuevoChofer(Choferes choferes)
+        {
+            //5929/choferes/newdriver
+            var result = _choferService.NuevoChofer(choferes);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [HttpGet]
+        public ActionResult get()
+        {
+            var result = _choferService.Get();
+            return StatusCode(result.StatusCode, result);
+        }
+
     }
 }
 
