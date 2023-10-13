@@ -2,13 +2,14 @@
 using Agencia_Taxis.DbContexts;
 using Agencia_Taxis.Entities;
 using Agencia_Taxis.Models;
+using Agencia_Taxis.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Agencia_Taxis.Services
 
 {
-	public class ChoferServices 
+	public class ChoferServices : IChoferService
 	{
         private readonly AgenciaDbContext dbContext;
 
@@ -17,7 +18,7 @@ namespace Agencia_Taxis.Services
             this.dbContext = DbContext;
         }
         
-	public ResultApi AsiganrTaxi(AsignarTaxiDto dto)
+	public ResultApi AsignarTaxi(AsignarTaxiDto dto)
         {
             ResultApi result = new ResultApi();
 
@@ -257,5 +258,6 @@ namespace Agencia_Taxis.Services
             result.StatusCode = 200;
             return result;
         }
+
     }
 }

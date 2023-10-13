@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using Agencia_Taxis.DbContexts;
 using Agencia_Taxis.Services;
+using Agencia_Taxis.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,7 +21,9 @@ builder.Services
 
 
 //Agregar servicios a contenedor de dependencias
-builder.Services.AddScoped<ChoferServices>();
+builder.Services.AddScoped<IChoferService, ChoferServices>();
+builder.Services.AddScoped<ITaxiService, TaxiServices>();
+
 
 var app = builder.Build();
 
