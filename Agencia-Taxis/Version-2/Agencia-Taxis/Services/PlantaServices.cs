@@ -3,11 +3,12 @@ using System.Numerics;
 using Agencia_Taxis.DbContexts;
 using Agencia_Taxis.Entities;
 using Agencia_Taxis.Models;
+using Agencia_Taxis.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace Agencia_Taxis.Services
 {
-	public class PlantaServices
+	public class PlantaServices : IPlantaService
 	{
         private readonly AgenciaDbContext dbContext;
 

@@ -23,6 +23,7 @@ builder.Services
 //Agregar servicios a contenedor de dependencias
 builder.Services.AddScoped<IChoferService, ChoferServices>();
 builder.Services.AddScoped<ITaxiService, TaxiServices>();
+builder.Services.AddScoped<IPlantaService, PlantaServices>();
 
 
 var app = builder.Build();
